@@ -1,0 +1,238 @@
+Missões:
+
+converte_string:
+    addi $sp,$sp,-8
+    sw $ra,0($sp)
+    sw $s0,4($sp)
+    move $s0, $a0
+L1:
+    lb $a0, 0($s0)
+    jal converte_char
+    nop
+    sb $v0, 0($s0)
+    bne $v0, $zero, L1
+    addi $s0, $s0, 1
+    lw $ra,0($sp)
+    lw $s0,4($sp)
+    jr $ra
+    addi $sp,$sp,8
+
+-----------------------
+absdiff:
+    addi $sp,$sp,-4
+    sw $ra,0($sp)
+    sub $a0, $a0, $a1
+    jal abs      # calcula valor absoluto de a0
+    nop
+    sll $v0,$v0,1
+    lw $ra,0($sp)
+    jr $ra
+    addi $sp,$sp,4
+------------------------
+soma:
+    addi $sp,$sp,-8
+    sw $ra,0($sp)
+    sw $t0,4($sp)
+    
+    
+    beq $a1,$zero,L
+    move $v0,$zero
+
+    lw $t0,0($a0)
+    addi $a0,$a0,4
+    addi $a1,$a1,-1
+    jal soma
+    nop
+    add $v0,$v0,$t0
+L:
+    lw $ra,0($sp)
+    lw $t0,4($sp)
+    addi $sp,$sp,8
+    jr $ra
+    nop
+--------------------------------
+
+Array:
+
+zahl:   ori  $v0, $zero, 0     
+        addi $sp, $sp,-4
+        sw $s0,0($sp)
+        
+L:      lb   $s0, 0($a0)       # lesen
+        addi $a0, $a0, 1
+        bne  $s0, $a1, SKIP    # springen
+        nop
+        addi $v0, $v0, 1       # zahl
+
+SKIP:   bne $s0, $zero, L
+        lw $s0,0($sp)
+        jr $ra
+        addi $sp,$sp,4
+
+-------------------------------
+strlen:
+    move $v0,$zero
+START:
+    lb $t0, 0($a0)
+    beq $t0, $zero,END
+    addi $v0, $v0, 1
+    addi $a0, $a0, 1
+    
+    j START
+    nop
+    
+END:   
+    jr $ra
+    addi $v0, $v0, -1
+
+-------------------------
+
+addi $a0, $a0, 1040
+
+leap_year:
+li $t0, 400
+div $a0, $t0
+mfhi $t1
+beq $t1, $zero, END
+addi $v0, $zero, 1
+
+li $t0, 4
+div $a0, $t0
+mfhi $t1
+seq $t1, $zero, $t1
+
+li $t0, 100
+div $a0, $t0
+mfhi $t2
+seq $t2, $zero, $t2
+
+blt $t2, $t1, END
+addi $v0, $zero, 1
+
+move $v0, $zero
+
+END:
+jr $ra
+nop
+
+-------------------------------------
+
+Ciclos:
+
+Summe:
+    move $v0,$zero
+Sumerloop:
+    beq $a0,$a1,END
+    add $v0,$v0,$a0
+
+    j Sumerloop
+    addi $a0,$a0,1
+
+END:
+    
+    jr $ra
+    nop
+-------------------------
+
+max3:
+    slt $at,$a0,$a1
+    beq $at,$zero,L
+    nop
+    slt $at,$a1,$a2
+    bne $at,$zero,L2
+    nop
+    jr $ra
+    move $v0,$a1
+L2:
+    jr $ra
+    move $v0,$a2
+L:
+    slt $at,$a0,$a2
+    bne $at,$zero,L2
+    nop
+    
+    jr $ra
+    move $v0,$a0
+
+------------------------------------
+
+sum3:
+	add $v0,$a0,$a1
+	add $v0,$v0,$a2
+	jr $ra
+	nop
+
+--------------------------------------
+
+abs:
+    slt $at ,$a0,$zero
+    bne $at,$zero,L
+    nop
+    j END
+    add $v0,$zero,$a0
+ L:
+    sub $v0,$zero,$a0
+ END:
+    jr $ra
+    nop
+
+-----------------------------
+
+Recursiva
+
+factorial:
+	addi $sp, $sp,-8
+	sw $ra, 0($sp)
+	sw $s0, 4($sp)
+    
+	li $v0, 1
+	beq $a0, $zero, RETURN
+	nop
+	move $s0, $a0
+	addi $a0, $a0, -1
+	jal factorial   # chamada recursiva
+	nop
+	mul $v0, $v0, $s0
+    
+RETURN:
+	lw $ra, 0($sp)
+  	lw $s0, 4($sp)
+  	jr $ra
+  	addi $sp, $sp,8
+___________________________________
+
+count_ones:
+	move $v0,$zero
+    L:
+    beq $a0,$zero,END
+    nop
+    andi $t0,$a0,1
+    bne $t0,1,L
+    srl $a0,$a0,1
+    addi $v0,$v0,1
+    j L
+    nop
+    
+    END:
+    jr $ra
+    nop
+________________________________
+count_zeros:
+	addi $v0,$zero,32
+    move $t1,$zero
+    L:
+    beq $a0,$zero,END
+    nop
+    andi $t0,$a0,1
+    bne $t0,1,L
+    srl $a0,$a0,1
+    addi $t1,$t1,1
+    j L
+    nop
+    
+    END:
+    jr $ra
+    sub $v0,$v0,$t1
+    
+
+

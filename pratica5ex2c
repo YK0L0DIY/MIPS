@@ -1,0 +1,22 @@
+.data
+
+.text
+.globl main
+
+log2:
+	move $at,$a1
+	addi $t1,$zero,1
+	add $v0,$zero,$zero
+	
+loop:
+	addi $v0,$v0,1
+	srl $at,$at,1	
+	bne $at,$t1,loop
+	nop
+	jr $ra
+	nop
+
+main:
+	addi $a1,$zero,8
+	jal log2
+	nop

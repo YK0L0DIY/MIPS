@@ -1,0 +1,4 @@
+bge $t0,$t1,label
+
+slt $at, $t0,$t1
+beq $at,$zero,label

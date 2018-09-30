@@ -1,0 +1,5 @@
+ble $t0,5,label
+
+addi $at,$zero,5
+slt $at,$at,$t0
+beq $at,$zero,label 
